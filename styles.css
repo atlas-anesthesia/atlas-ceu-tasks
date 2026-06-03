@@ -20,6 +20,9 @@
   --dev: #6366c4;            /* indigo */
   --dev-2: #474aa0;
   --dev-tint: rgba(99, 102, 196, 0.05);
+  --general: #64748b;        /* slate — shared/unassigned bucket */
+  --general-2: #475569;
+  --general-tint: rgba(100, 116, 139, 0.05);
   --due-overdue-bg: #fadbd5;
   --due-overdue-fg: #c0392b;
   --due-today-bg: #fdeccf;
@@ -331,7 +334,8 @@ body.me-josh   .me-dot { background: var(--josh);   box-shadow: 0 0 0 2px rgba(4
 
 /* columns */
 .columns { display: grid; grid-template-columns: 1fr; gap: 18px; }
-@media (min-width: 760px) { .columns { grid-template-columns: repeat(3, 1fr); gap: 22px; } }
+@media (min-width: 760px)  { .columns { grid-template-columns: repeat(2, 1fr); gap: 22px; } }
+@media (min-width: 1180px) { .columns { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
 
 .person {
   background: var(--surface); border: 1px solid var(--line);
@@ -2223,6 +2227,26 @@ body.me-dev .me-dot { background: var(--dev); box-shadow: 0 0 0 2px rgba(99,102,
 .cal-item-task.person-dev { border-left-color: var(--dev); }
 .day-tl-allday-item.kind-task.person-dev::before { background: var(--dev); }
 .day-tl-event.person-dev { border-left-color: var(--dev); }
+
+/* =====================================================================
+   general — shared / unassigned bucket (slate, not a person identity)
+   ===================================================================== */
+.person-general { background: linear-gradient(180deg, var(--surface) 0%, var(--general-tint) 200%); }
+.person-general { border-color: rgba(100,116,139,.18); }
+.person-general .avatar { background: linear-gradient(135deg, #94a3b8 0%, var(--general) 60%, var(--general-2) 100%); }
+.person-general .avatar::after { background: var(--general); }
+.person-general .person-name { color: var(--general-2); }
+.person-general .task-checkbox:hover { border-color: var(--general); }
+.person-general .task-checkbox:checked { background-image: linear-gradient(135deg, #94a3b8 0%, var(--general) 70%); }
+.person-general .manual-btn:hover {
+  background: var(--general); color: #fff; border-color: var(--general);
+  transform: rotate(90deg) scale(1.05);
+}
+.today-item.person-general .today-person { background: var(--general-tint); color: var(--general-2); border: 1px solid rgba(100,116,139,.18); }
+.task-by.by-general { color: var(--general); }
+.cal-item-task.person-general { border-left-color: var(--general); }
+.day-tl-allday-item.kind-task.person-general::before { background: var(--general); }
+.day-tl-event.person-general { border-left-color: var(--general); }
 
 /* =====================================================================
    idea comments

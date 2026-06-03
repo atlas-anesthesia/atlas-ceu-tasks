@@ -55,12 +55,14 @@ const $ = (sel) => document.querySelector(sel);
 const oliverList = $("#oliverList");
 const joshList = $("#joshList");
 const devList = $("#devList");
+const generalList = $("#generalList");
 const oliverCount = $("#oliverCount");
 const joshCount = $("#joshCount");
 const devCount = $("#devCount");
-// per-person DOM lookups, keyed by person id (keeps the 3-person code generic)
-const LIST_EL = { oliver: oliverList, josh: joshList, dev: devList };
-const COUNT_EL = { oliver: oliverCount, josh: joshCount, dev: devCount };
+const generalCount = $("#generalCount");
+// per-assignee DOM lookups, keyed by id (keeps the column code generic)
+const LIST_EL = { oliver: oliverList, josh: joshList, dev: devList, general: generalList };
+const COUNT_EL = { oliver: oliverCount, josh: joshCount, dev: devCount, general: generalCount };
 const quickInput = $("#quickInput");
 const quickStatus = $("#quickStatus");
 const addBtn = $("#addBtn");
@@ -137,7 +139,11 @@ const seqAddStep = $("#seqAddStep");
 
 // 5. state
 let tasks = [];
-const PEOPLE = ["oliver", "josh", "dev"];
+// PEOPLE = every assignee that gets its own column (incl. the shared "general"
+// bucket). IDENTITIES = the real humans who can sign in as "me" — "general" is
+// a bucket, not a person, so it's excluded from identity switching/parsing.
+const PEOPLE = ["oliver", "josh", "dev", "general"];
+const IDENTITIES = ["oliver", "josh", "dev"];
 const getPref = (k, fallback) => localStorage.getItem(k) || fallback;
 const setPref = (k, v) => localStorage.setItem(k, v);
 
@@ -146,7 +152,7 @@ let filterTag = getPref("filterTag", "");
 sortModeSel.value = sortMode;
 
 let me = getPref("me", "oliver");
-if (!PEOPLE.includes(me)) me = "oliver";
+if (!IDENTITIES.includes(me)) me = "oliver";
 
 function buildFilterOptions() {
   filterTagSel.innerHTML = '<option value="">all tags</option>';
@@ -167,9 +173,9 @@ function updateMeUI() {
   document.body.classList.add(`me-${me}`);
 }
 mePill.addEventListener("click", () => {
-  // cycle through the people in order: oliver → josh → dev → oliver
-  const idx = PEOPLE.indexOf(me);
-  me = PEOPLE[(idx + 1) % PEOPLE.length];
+  // cycle through the real people only: oliver → josh → dev → oliver
+  const idx = IDENTITIES.indexOf(me);
+  me = IDENTITIES[(idx + 1) % IDENTITIES.length];
   setPref("me", me);
   updateMeUI();
   checkForNewTasks();
@@ -206,7 +212,7 @@ function maybeShowIdentityModal() {
 identityModal.querySelectorAll(".identity-option").forEach((btn) => {
   btn.addEventListener("click", () => {
     const picked = btn.dataset.id;
-    if (!PEOPLE.includes(picked)) return;
+    if (!IDENTITIES.includes(picked)) return;
     me = picked;
     setPref("me", me);
     updateMeUI();
@@ -1553,6 +1559,7 @@ function delegatedMergeClick(e) {
 oliverList.addEventListener("click", delegatedMergeClick, true);
 joshList.addEventListener("click", delegatedMergeClick, true);
 if (devList) devList.addEventListener("click", delegatedMergeClick, true);
+if (generalList) generalList.addEventListener("click", delegatedMergeClick, true);
 
 mergeBarCancel.addEventListener("click", exitMergeMode);
 mergeBarDone.addEventListener("click", commitMerge);
@@ -2053,7 +2060,7 @@ async function saveMeeting() {
   const time = meetingTimeInput.value || null;
   const location = meetingLocationInput.value.trim().toLowerCase() || null;
   const duration = parseInt(meetingDurationInput.value, 10) || 30;
-  const who = [...PEOPLE, "all"].includes(meetingWhoSelected) ? meetingWhoSelected : "oliver";
+  const who = [...IDENTITIES, "all"].includes(meetingWhoSelected) ? meetingWhoSelected : "oliver";
 
   if (editingMeetingId) {
     await updateTask(editingMeetingId, { text: title, dueDate: ts, time, location, duration, person: who });
@@ -2286,7 +2293,7 @@ async function handleQuickAdd() {
       const text = t.text;
       if (!text) continue;
       if (!PEOPLE.includes(person)) {
-        const choice = prompt(`who is this for?\n\n"${text}"\n\ntype: oliver, josh, dev, or skip`, "oliver");
+        const choice = prompt(`who is this for?\n\n"${text}"\n\ntype: oliver, josh, dev, general, or skip`, "general");
         if (!choice) continue;
         const lower = choice.toLowerCase().trim();
         if (lower === "skip") continue;

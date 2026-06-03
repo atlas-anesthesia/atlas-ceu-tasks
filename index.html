@@ -233,6 +233,35 @@
           </button>
         </form>
       </section>
+
+      <section class="person person-general">
+        <header class="person-head">
+          <div class="avatar avatar-general">
+            <span class="avatar-fallback">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+          </div>
+          <div class="person-meta">
+            <h2 class="person-name">general</h2>
+            <span class="person-count" id="generalCount">— / —</span>
+          </div>
+        </header>
+        <ul class="task-list" id="generalList"></ul>
+        <form class="manual-add" data-person="general">
+          <input
+            type="text"
+            placeholder="add a shared task… (try ‘order supplies friday #partnerships’)"
+            class="manual-input"
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="none"
+            spellcheck="true"
+          />
+          <button type="submit" class="manual-btn" aria-label="add general task">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </form>
+      </section>
     </div>
 
     <footer class="page-footer">
@@ -317,6 +346,7 @@
             <button type="button" class="nt-pick" data-person="oliver">oliver</button>
             <button type="button" class="nt-pick" data-person="josh">josh</button>
             <button type="button" class="nt-pick" data-person="dev">dev</button>
+            <button type="button" class="nt-pick" data-person="general">general</button>
           </div>
         </div>
         <div class="nt-row-2">
