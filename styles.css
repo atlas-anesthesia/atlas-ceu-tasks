@@ -2097,6 +2097,15 @@ body.merge-active .task-item:not(.merge-source):not(.merge-candidate) { opacity:
 
 /* ===== ideas view ===== */
 .view-ideas { max-width: 960px; margin: 0 auto; }
+/* on large screens the ideas board breaks out wide (like the task columns) so
+   there's room for lots of idea cards side by side. the input + filters keep
+   their own centered max-width, so only the card grid widens. */
+@media (min-width: 1180px) {
+  .view-ideas {
+    position: relative; left: 50%; transform: translateX(-50%);
+    width: min(1340px, calc(100vw - 64px)); max-width: none;
+  }
+}
 .ideas-head { margin-bottom: 18px; text-align: center; }
 .ideas-title {
   font-family: var(--display); font-weight: 400; font-style: italic;
@@ -2151,8 +2160,9 @@ body.merge-active .task-item:not(.merge-source):not(.merge-candidate) { opacity:
 
 .ideas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  align-items: start;
 }
 .idea-card {
   position: relative;
