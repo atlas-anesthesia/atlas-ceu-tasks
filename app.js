@@ -1245,6 +1245,47 @@ async function deleteIdeaComment(ideaId, index) {
   await updateTask(ideaId, { comments });
 }
 
+async function editIdeaComment(ideaId, index, newText) {
+  const clean = (newText || "").trim().toLowerCase();
+  const idea = tasks.find((t) => t.id === ideaId);
+  if (!idea || !Array.isArray(idea.comments) || !idea.comments[index]) return;
+  if (!clean || clean === (idea.comments[index].text || "")) return;
+  const comments = idea.comments.map((c, i) =>
+    i === index ? { ...c, text: clean, editedAt: Date.now() } : c
+  );
+  await updateTask(ideaId, { comments });
+}
+
+// inline-edit a single comment's text in place (mirrors makeIdeaTextEditable)
+function makeCommentEditable(span, ideaId, index) {
+  if (span.getAttribute("contenteditable") === "true") return;
+  const original = (tasks.find((t) => t.id === ideaId)?.comments?.[index]?.text || "").toLowerCase();
+  span.setAttribute("contenteditable", "true");
+  span.focus();
+  bindLowercaseContentEditable(span);
+  const range = document.createRange();
+  range.selectNodeContents(span);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  const finish = async () => {
+    span.removeAttribute("contenteditable");
+    span.removeEventListener("blur", finish);
+    span.removeEventListener("keydown", onKey);
+    const newText = span.textContent.trim().toLowerCase();
+    if (!newText) { span.textContent = original; return; }
+    await editIdeaComment(ideaId, index, newText);
+  };
+  const onKey = (e) => {
+    if (e.key === "Enter") { e.preventDefault(); span.blur(); }
+    else if (e.key === "Escape") { span.textContent = original; span.blur(); }
+  };
+  span.addEventListener("blur", finish);
+  span.addEventListener("keydown", onKey);
+}
+
 function renderIdeas() {
   let items = tasks.filter((t) => t.kind === "idea");
   items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -1340,7 +1381,20 @@ function renderIdeas() {
         const txt = document.createElement("span");
         txt.className = "idea-comment-text";
         txt.textContent = (c.text || "").toLowerCase();
+        txt.title = "click to edit";
+        txt.addEventListener("click", () => makeCommentEditable(txt, idea.id, ci));
         row.appendChild(txt);
+
+        const cedit = document.createElement("button");
+        cedit.type = "button";
+        cedit.className = "idea-comment-edit";
+        cedit.title = "edit comment";
+        cedit.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>`;
+        cedit.addEventListener("click", (e) => {
+          e.stopPropagation();
+          makeCommentEditable(txt, idea.id, ci);
+        });
+        row.appendChild(cedit);
 
         const cdel = document.createElement("button");
         cdel.type = "button";
