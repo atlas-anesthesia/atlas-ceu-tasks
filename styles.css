@@ -2201,15 +2201,21 @@ body.merge-active .task-item:not(.merge-source):not(.merge-candidate) { opacity:
   text-transform: uppercase; color: var(--ink-3);
   padding-top: 4px; border-top: 1px dashed var(--line);
 }
-.idea-card-delete {
-  position: absolute; top: 8px; right: 8px;
+.idea-card-delete,
+.idea-card-edit {
+  position: absolute; top: 8px;
   background: none; border: none; cursor: pointer;
   color: var(--ink-faint); padding: 4px; border-radius: 6px;
   opacity: 0; transition: opacity .15s, color .15s, background .15s;
 }
+.idea-card-delete { right: 8px; }
+.idea-card-edit { right: 34px; }
 .idea-card:hover .idea-card-delete,
-.idea-card:focus-within .idea-card-delete { opacity: 1; }
+.idea-card:hover .idea-card-edit,
+.idea-card:focus-within .idea-card-delete,
+.idea-card:focus-within .idea-card-edit { opacity: 1; }
 .idea-card-delete:hover { color: var(--oliver); background: var(--oliver-tint); }
+.idea-card-edit:hover { color: var(--dev); background: var(--dev-tint); }
 
 .ideas-empty {
   text-align: center; padding: 30px 0;

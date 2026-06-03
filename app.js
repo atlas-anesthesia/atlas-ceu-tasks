@@ -1385,6 +1385,16 @@ function renderIdeas() {
     commentsWrap.appendChild(cForm);
     card.appendChild(commentsWrap);
 
+    const edit = document.createElement("button");
+    edit.className = "idea-card-edit";
+    edit.title = "edit idea";
+    edit.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>`;
+    edit.addEventListener("click", (e) => {
+      e.stopPropagation();
+      makeIdeaTextEditable(textEl, idea.id);
+    });
+    card.appendChild(edit);
+
     const del = document.createElement("button");
     del.className = "idea-card-delete";
     del.title = "delete";
