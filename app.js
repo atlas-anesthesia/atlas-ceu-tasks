@@ -2424,13 +2424,21 @@ async function saveNewTask() {
   if (!text) { ntText.focus(); return; }
   const dueDate = parseDateInputValue(ntDate.value);
   const time = ntTime.value || null;
-  await addTask(ntDraft.person, text, {
+  const person = ntDraft.person;
+  const extras = {
     dueDate,
     time: dueDate ? time : null,
     urgency: ntDraft.urgency || null,
     tags: [...ntDraft.tags],
-  });
+  };
+  // close immediately so the modal never hangs on a slow/queued firestore
+  // write (the task still shows instantly via local cache); report failures.
   closeNewTaskModal();
+  try {
+    await addTask(person, text, extras);
+  } catch (err) {
+    console.error("add reminder failed:", err);
+  }
 }
 newTaskModalClose.addEventListener("click", closeNewTaskModal);
 newTaskModalCancel.addEventListener("click", closeNewTaskModal);

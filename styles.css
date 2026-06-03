@@ -168,6 +168,15 @@ body.me-josh   .me-dot { background: var(--josh);   box-shadow: 0 0 0 2px rgba(4
 
 /* page */
 .page { max-width: 1040px; margin: 0 auto; padding: 28px 18px 100px; }
+/* on large screens the columns break out wider than the rest of the page
+   (which stays at a comfortable reading width) so 4 cards aren't cramped.
+   left:50% + translateX(-50%) re-centers the wider block on the viewport. */
+@media (min-width: 1180px) {
+  .columns {
+    position: relative; left: 50%; transform: translateX(-50%);
+    width: min(1340px, calc(100vw - 64px));
+  }
+}
 
 /* notification banner */
 .notif-banner {
