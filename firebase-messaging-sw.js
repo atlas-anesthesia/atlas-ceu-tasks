@@ -29,7 +29,7 @@ messaging.onBackgroundMessage(() => {
 // when the user clicks the notification, open / focus the app
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || "/";
+  const url = (event.notification.data && event.notification.data.url) || "/atlas-ceu-tasks/";
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((wins) => {
       for (const w of wins) {
